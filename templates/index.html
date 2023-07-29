@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)http://bootstrapk.com/examples/starter-template/# -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+     
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="http://bootstrapk.com/favicon.ico">
+ 
+    <title>인공지능_바리스따</title>
+ 
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <!-- Custom styles for this template -->
+    <link href="/static/css/starter-template.css" rel="stylesheet">
+ 
+  </head>
+ 
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand">바리스따</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a>☕</a></li>
+            <li><a>정유리</a></li>
+            <li><a>김혜선</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <div class="container" style="text-align: center;">
+      <div class="starter-template">
+        <h2>원두 구별할래?☕</h2>
+        <p class="lead">딥러닝을 활용한 원두 판별하기<br>생두, 라이트, 미디엄, 다크 로스팅을 확인 가능‼️😉</p>
+      </div>
+      <form id="Upload" action="/predict" method="POST" enctype="multipart/form-data">
+        <div class="button" style="text-align: center;"></div>
+        <input type="file" value="Upload" name="image" onchange="loadFile(event);" style="margin: 0 auto;" />
+        <div id="image_container" style="text-align: center;"></div>
+        <button type="button" id="submitButton" onclick="submitForm()">제출</button>
+        <p id="ha">로스팅 결과가 궁금하나요?☕😮</p>
+      </form>
+      <div class="image-container" id="image-show"></div>   
+      <div id="result-container">
+        {% if data %}
+          <p id="result">{{ data }}로스팅 된 상태입니다.☕</p>
+        {% else %}
+          <p id="result">커피의 상태를 판별할 수 없습니다.</p>
+        {% endif %}
+    </div>
+   <script src="/static/js/jquery.min.js"></script>    
+    <script>
+      function submitForm() {
+        var formData = new FormData(document.getElementById('Upload'));
+        var submit = document.getElementById('submitButton');
+        submit.onclick = showImage;
+        $.ajax({
+          type: 'POST',
+          url: '/predict',
+          data: formData,
+          contentType: false,
+          processData: false,
+          beforeSend: function () {
+            document.getElementById('ha').innerHTML = '잠시만 기다려주세요!';
+          },
+          success: function (response) {
+            console.log(response.data);
+            var resultContainer = document.getElementById('result-container');
+            resultContainer.style.display = 'block';
+            var result = document.getElementById('result');
+            result.textContent = "커피의 상태는 " + response.data + "로스팅된 상태입니다!";
+          },
+          error: function (error) {
+            console.log(error);
+          }
+        });
+      }
+      function showImage() {
+        document.getElementById('ha').innerHTML = '잠시만 기다려주세요!';
+        document.getElementById('image-show').lastElementChild;
+        // Define 'img' variable
+        img.style.visibility = "visible";
+        document.getElementById('image-show').style.visibility = 'visible';
+        document.getElementById('fileName').textContent = null; //기존 파일 이름 지우기
+      }
+      function coffe(){
+        document.getElementById('ha').innerHTML='잠시만 기다려주세요!';
+      }
+      
+      function loadFile(event) {
+        var reader = new FileReader();
+        reader.onload = function (event) {
+         var img = document.createElement("img");
+         img.setAttribute("src", event.target.result);
+         document.querySelector("div#image_container").appendChild(img);
+        img.style.width = "40%";
+         img.style.height = "40%";
+         img.style.visibility = "visible"; //버튼을 누르기 전까지는 이미지 숨기기
+        img.style.objectFit = "contain";
+        var container = document.getElementById('image-show');
+        container.appendChild(img);
+          
+        };    
+        reader.readAsDataURL(event.target.files[0]);
+      } 
+    </script>
+ 
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+ 
+</body></html>
